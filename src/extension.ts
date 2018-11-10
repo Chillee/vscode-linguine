@@ -1,0 +1,65 @@
+'use strict';
+
+import * as vscode from 'vscode';
+// import 'vscode';
+
+export function activate(context: vscode.ExtensionContext) {
+
+
+    // 👍 formatter implemented using API
+    vscode.languages.registerDocumentFormattingEditProvider('lgl', {
+        provideDocumentFormattingEdits(document: vscode.TextDocument): vscode.TextEdit[] {
+            // const whitespace
+            let edits = [];
+            let indentLevel = 0;
+            const indentLeftChars = "{";
+            const indentRightChars = "}";
+            for (let i = 0; i < document.lineCount; i++) {
+                const line = document.lineAt(i);
+                let whiteIdx = line.firstNonWhitespaceCharacterIndex;
+                const lineText = line.text;
+                let numLeft = 0;
+                let numRight = 0;
+                let onlyRights = true;
+                let inString = null;
+                let curEdit = null;
+                for (let charIdx = 0; charIdx < lineText.length; charIdx++) {
+                    const char = lineText[charIdx];
+                    if (indentLeftChars.indexOf(char) != -1 && inString == null) {
+                        numLeft++;
+                        if (onlyRights) {
+                            onlyRights = false;
+                        }
+                    } else if (indentRightChars.indexOf(char) != -1 && inString == null) {
+                        numRight++;
+                        if (onlyRights) {
+                            curEdit = vscode.TextEdit.replace(new vscode.Range(line.range.start, new vscode.Position(i, whiteIdx)), " ".repeat((indentLevel - numRight) * 4))
+                        }
+                    }
+                    if (char == '"' && inString == null) {
+                        inString = '"';
+                    } else if (char == "'" && inString == null) {
+                        inString = "'";
+                    } else if (char == inString && lineText[charIdx - 1] != '\\') {
+                        inString = null;
+                    }
+                }
+                if (numLeft == 0 && numRight == 0) {
+                    curEdit = vscode.TextEdit.replace(new vscode.Range(line.range.start, new vscode.Position(i, whiteIdx)), " ".repeat(indentLevel * 4))
+                } else if (numLeft - numRight > 0) {
+                    curEdit = vscode.TextEdit.replace(new vscode.Range(line.range.start, new vscode.Position(i, whiteIdx)), " ".repeat(indentLevel * 4))
+                } else if (numLeft - numRight == 0) {
+                    // curEdit = vscode.TextEdit.replace(new vscode.Range(line.range.start, new vscode.Position(i, whiteIdx)), " ".repeat((indentLevel - 1) * 4))
+                }
+                indentLevel += numLeft - numRight;
+                if (curEdit) {
+                    edits.push(curEdit);
+                }
+            }
+            // Currently disabled.
+            return [];
+            // return edits;
+        }
+    });
+}
+

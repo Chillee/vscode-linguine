@@ -1,0 +1,51 @@
+{
+    "name": "vscode-linguine",
+    "displayName": "vscode-linguine",
+    "description": "Linguine Language for VSCode",
+    "version": "0.0.1",
+    "publisher": "chillee",
+    "engines": {
+        "vscode": "^1.21.0"
+    },
+    "repository": {
+        "url": "https://github.com/Chillee/VSCode-Linguine"
+    },
+    "categories": [
+        "Programming Languages"
+    ],
+    "main": "./out/src/extension",
+    "icon": "images/cucapra.png",
+    "activationEvents": [
+        "onLanguage:lgl"
+    ],
+    "contributes": {
+        "languages": [
+            {
+                "id": "lgl",
+                "aliases": [
+                    "Linguine",
+                    "linguine"
+                ],
+                "extensions": [
+                    ".lgl"
+                ],
+                "configuration": "./language-configuration.json"
+            }
+        ],
+        "grammars": [
+            {
+                "language": "lgl",
+                "scopeName": "text.lgl",
+                "path": "./syntaxes/lgl.tmLanguage.json"
+            }
+        ]
+    },
+    "scripts": {
+        "postinstall": "node ./node_modules/vscode/bin/install && tsc"
+    },
+    "devDependencies": {
+        "@types/node": "*",
+        "vscode": "1.0.3",
+        "typescript": "2.0.6"
+    }
+}
