@@ -1,8 +1,8 @@
 {
-    "name": "vscode-linguine",
-    "displayName": "vscode-linguine",
-    "description": "Linguine Language for VSCode",
-    "version": "0.0.1",
+    "name": "vscode-gator",
+    "displayName": "vscode-gator",
+    "description": "Gator Language for VSCode",
+    "version": "0.0.2",
     "publisher": "chillee",
     "engines": {
         "vscode": "^1.21.0"
